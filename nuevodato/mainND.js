@@ -40,17 +40,19 @@ grabarND.addEventListener("click", (e) => {
   const datocampo = document.getElementById("data-input-nc").value;
   const datovalor = document.getElementById("data-input-nv").value;
 
+  //Agregar : Nuevo Registro a Firebase Realtime 
   const dataRef = ref(database, datocampo + '/');
 
-  // Write "Hola mundo" to the database
+  // Escribir : Nuevo Dato
   set(dataRef, {
     message: datovalor
   })
-    .then(() => {
-      console.log("Data saved successfully!");
-    })
-    .catch((error) => {
-      console.error("Error writing data:", error);
-    });
+  .then(() => {
+    console.log("Data saved successfully!");
+  })
+  .catch((error) => {
+    console.error("Error writing data:", error);
+  });
+
 
 });
