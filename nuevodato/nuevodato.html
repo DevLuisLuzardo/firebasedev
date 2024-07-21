@@ -12,21 +12,23 @@
 
   <h1>FirebaseDev NuevoDato</h1>
   <p>Los nuevos datos que se van a ingresar a la base de datos están conformados por el siguiente
-  par clave >> Campo y Valor</p>
-  
+    par clave >> Campo y Valor</p>
+
   <label for="data-input">Campo : </label>
   <input type="text" id="data-input-nc" value="">
-
   <label for="data-input">Valor : </label>
   <input type="text" id="data-input-nv" value="">
   <br>
   <button type="button" id="grabarND">Grabar Dato</button>
 
-  <!-- crear un objeto lista, para ver todos los datos ingresados-->
-  
+  <h4>Lista de Datos Ingresados</h4>
+  <table id="data-table">
+    <!-- Los datos se insertarán aquí -->
+  </table>
 
   <script type="module" src="mainND.js"></script>
   <script type="module" src="main2ND.js"></script>
+  <script type="module" src="main3LST.js"></script>
 
 </body>
 
