@@ -1,6 +1,5 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
 // Configuración de Firebase de tu aplicación web
 const firebaseConfig = {
@@ -15,13 +14,13 @@ const firebaseConfig = {
 };
 
 // Inicializa Firebase
-const app = initializeApp(firebaseConfig);
+let app = initializeApp(firebaseConfig);
 
 // Obtén una referencia a la base de datos en tiempo real
-const database = getDatabase(app);
+let database = getDatabase(app);
 
 // Define la referencia de la raíz
-const rootRef = ref(database, '/');
+let rootRef = ref(database, '/');
 
 // Función para aplicar estilos a la tabla y sus celdas
 function applyStyles() {
@@ -42,6 +41,16 @@ function applyStyles() {
     td.style.border = "1px solid #ddd";
     td.style.padding = "8px";
   }
+
+}
+
+function limpiarcampos() {
+  try {
+    document.getElementById("data-input-nc").value="";
+    document.getElementById("data-input-nv").value="";
+  } catch (error) {
+    console.log("Error : " + error);
+  }
 }
 
 // Función para mostrar los datos recuperados en una tabla
@@ -56,8 +65,33 @@ function displayData(data) {
     const headerCell = document.createElement("th");
     headerCell.colSpan = 2; // Para que ocupe las dos columnas (encabezado y valor)
     headerCell.textContent = key.charAt(0).toUpperCase() + key.slice(1); // Capitaliza la primera letra del encabezado
-    headerRow.appendChild(headerCell);
 
+
+    const deleteCell = headerRow.insertCell();
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "x";
+    deleteButton.addEventListener("click", async () => {
+      try {
+
+        // Define la referencia de la raiz (/) a eliminar o nodo
+        let rootRefs = ref(database, '/' + key);
+        await remove(rootRefs)
+          .then(() => {
+            console.log("Registro eliminado correctamente");
+            document.getElementById("data-input-nc").value = error;
+          })
+          .catch((error) => {
+            console.error("Error al eliminar registro:", error);
+          });
+      } catch (error) {
+        console.error("Error al eliminar base de datos:", error);
+      }
+
+    });
+    deleteCell.appendChild(deleteButton);
+
+
+    headerRow.appendChild(headerCell);
     // Crear filas de datos
     const values = data[key];
     Object.keys(values).forEach(subKey => {
@@ -73,13 +107,17 @@ function displayData(data) {
   applyStyles();
 }
 
+
+
 // Adjunta un listener a la referencia de la raíz para escuchar cambios y mostrar los datos
 onValue(rootRef, (snapshot) => {
   const data = snapshot.val();
   displayData(data);
+  limpiarcampos();
 }, {
   // Manejo de errores opcional
   onError: (error) => {
     console.error("Error leyendo datos:", error);
   }
 });
+
